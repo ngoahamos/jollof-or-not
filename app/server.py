@@ -72,13 +72,14 @@ async def upload(request):
 def predict_image_from_bytes(bytes):
     img = open_image(BytesIO(bytes))
     losses = learn.predict(img)
-    return JSONResponse({
-        "predictions": sorted(
-            zip(learn.data.classes, map(float, losses)),
-            key=lambda p: p[1],
-            reverse=True
-        )
-    })
+    return JSONResponse({"predictions": losses})
+    # return JSONResponse({
+    #     "predictions": sorted(
+    #         zip(learn.data.classes, map(float, losses)),
+    #         key=lambda p: p[1],
+    #         reverse=True
+    #     )
+    # })
 
 if __name__ == '__main__':
     if 'serve' in sys.argv:
