@@ -1,5 +1,11 @@
 var el = x => document.getElementById(x);
+const POSITIVES = ["Sweet! I can smell some Jollof",
+                   "Nice! This what we call JOLLOF",
+                   "I didn't have to look, This is JOllof!"];
 
+const NEGATIVES = ["Nope! Not Jollof",
+                   "Sorry! this can't be jollof",
+                   "Not Jollof"];
 function showPicker() {
   el("file-input").click();
 }
@@ -29,7 +35,7 @@ function analyze() {
   xhr.onload = function(e) {
     if (this.readyState === 4) {
       var response = JSON.parse(e.target.responseText);
-      el("result-label").innerHTML = `Result = ${response["result"]}`;
+      el("result-label").innerHTML =  funnyText(response["result"] === 'jollof');
     }
     el("analyze-button").innerHTML = "Analyze";
   };
@@ -37,5 +43,10 @@ function analyze() {
   var fileData = new FormData();
   fileData.append("file", uploadFiles[0]);
   xhr.send(fileData);
+}
+
+function funnyText(type){
+  return type === true ?  POSITIVES[Math.floor(Math.random()*POSITIVES.length)]:
+                          NEGATIVES[Math.floor(Math.random()*NEGATIVES.length)];
 }
 

@@ -71,7 +71,7 @@ async def upload(request):
 
 def predict_image_from_bytes(bytes):
     img = open_image(BytesIO(bytes))
-    losses = img.predict(learn)
+    losses = learn.predict(img)
     return JSONResponse({
         "predictions": sorted(
             zip(learn.data.classes, map(float, losses)),
