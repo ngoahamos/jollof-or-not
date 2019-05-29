@@ -63,6 +63,22 @@ async def analyze(request):
     prediction = learn.predict(img)[0]
     return JSONResponse({'result': str(prediction)})
 
+@app.route("/api-prediction", methods=["POST"])
+async def upload(request):
+    data = await request.form()
+    bytes = await (data["file"].read())
+    return predict_image_from_bytes(bytes)
+
+def predict_image_from_bytes(bytes):
+    img = open_image(BytesIO(bytes))
+    losses = img.predict(cat_learner)
+    return JSONResponse({
+        "predictions": sorted(
+            zip(cat_learner.data.classes, map(float, losses)),
+            key=lambda p: p[1],
+            reverse=True
+        )
+    })
 
 if __name__ == '__main__':
     if 'serve' in sys.argv:
