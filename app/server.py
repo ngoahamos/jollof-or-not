@@ -74,7 +74,7 @@ async def upload(request):
 
 def pretty_result(result):
     prediction = str(result[0])
-    probability = map(float, result[2])
+    probability = list(map(float, result[2]))
     return JSONResponse({"result": prediction, "pro": probability})
 
 def predict_image_from_bytes(bytes):
