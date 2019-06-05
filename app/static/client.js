@@ -48,7 +48,7 @@ function analyze() {
 }
 
 function funnyText(response) {
-  let text = response["result"] === 'jollof' && response["pro"][0] > 50 ? "It's Jollof" : "Nope! Not Jollof.";
+  let text = response["result"] === 'jollof' && response["pro"][0] > 0.50 ? "It's Jollof" : "Nope! Not Jollof.";
   let probability = Math.floor(response["pro"][0] * 100);
   let confidence = "My Confidence level " + probability + "%";
   return text + "\n" + confidence;
