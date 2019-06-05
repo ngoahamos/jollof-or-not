@@ -31,6 +31,7 @@ function analyze() {
     true);
   xhr.onerror = function() {
     alert(xhr.responseText);
+    el("analyze-button").innerHTML = "Analyze";
   };
   xhr.onload = function(e) {
     if (this.readyState === 4) {
@@ -39,6 +40,7 @@ function analyze() {
     }
     el("analyze-button").innerHTML = "Analyze";
   };
+  
 
   var fileData = new FormData();
   fileData.append("file", uploadFiles[0]);

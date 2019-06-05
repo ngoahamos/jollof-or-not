@@ -70,11 +70,11 @@ async def upload(request):
     bytes = await (data.base64.read())
     imgdata = base64.b64decode(str(bytes))
     result = predict_image_from_bytes(imgdata)
-    return pretty_result(result);
+    return pretty_result(result)
 
 def pretty_result(result):
     prediction = str(result[0])
-    probability = result[2]
+    probability = map(float, result[2])
     return JSONResponse({"result": prediction, "pro": probability})
 
 def predict_image_from_bytes(bytes):
