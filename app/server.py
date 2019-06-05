@@ -8,6 +8,7 @@ from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse, JSONResponse
 from starlette.staticfiles import StaticFiles
+import base64
 
 export_file_url = 'https://drive.google.com/uc?export=download&id=11XIWG1Af21Bg2Tj8Ai23dDdz_pajgK70'
 export_file_name = 'export.pkl'
@@ -57,29 +58,29 @@ async def homepage(request):
 
 @app.route('/analyze', methods=['POST'])
 async def analyze(request):
-    img_data = await request.form()
-    img_bytes = await (img_data['file'].read())
-    img = open_image(BytesIO(img_bytes))
-    prediction = learn.predict(img)[0]
-    return JSONResponse({'result': str(prediction)})
-
-@app.route("/api-prediction", methods=["POST"])
-async def upload(request):
     data = await request.form()
     bytes = await (data["file"].read())
-    return predict_image_from_bytes(bytes)
+    result = predict_image_from_bytes(bytes)
+    return pretty_result(result)
+    
+
+@app.route("/base64", methods=["POST"])
+async def upload(request):
+    data = await request.json()
+    bytes = await (data.base64.read())
+    imgdata = base64.b64decode(str(bytes))
+    result = predict_image_from_bytes(imgdata)
+    return pretty_result(result);
+
+def pretty_result(result):
+    prediction = str(result[0])
+    probability = result[2]
+    return JSONResponse({"result": prediction, "pro": probability})
 
 def predict_image_from_bytes(bytes):
     img = open_image(BytesIO(bytes))
-    losses = learn.predict(img)
+    return learn.predict(img)
     return JSONResponse({"predictions": losses})
-    # return JSONResponse({
-    #     "predictions": sorted(
-    #         zip(learn.data.classes, map(float, losses)),
-    #         key=lambda p: p[1],
-    #         reverse=True
-    #     )
-    # })
 
 if __name__ == '__main__':
     if 'serve' in sys.argv:

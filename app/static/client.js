@@ -35,7 +35,7 @@ function analyze() {
   xhr.onload = function(e) {
     if (this.readyState === 4) {
       var response = JSON.parse(e.target.responseText);
-      el("result-label").innerHTML =  funnyText(response["result"] === 'jollof');
+      el("result-label").innerHTML =  funnyText(response);
     }
     el("analyze-button").innerHTML = "Analyze";
   };
@@ -45,8 +45,10 @@ function analyze() {
   xhr.send(fileData);
 }
 
-function funnyText(type){
-  return type === true ?  POSITIVES[Math.floor(Math.random()*POSITIVES.length)]:
-                          NEGATIVES[Math.floor(Math.random()*NEGATIVES.length)];
+function funnyText(response) {
+  let text = response["result"] === 'jollof' && response["pro"][0] > 50 ? "It's Jollof" : "Nope! Not Jollof";
+  let probability = Math.floor(response["pro"][0]);
+  let confidence = "How Confidence I am, " + probability + "%";
+  return text + "\n" + confidence;
 }
 
